@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+    <!-- 配置数据源 -->
+    <bean id="dataSource"
+          class="com.alibaba.druid.pool.DruidDataSource"
+          destroy-method="close">
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="maxActive" value="${jdbc.maxActive}"/>
+        <property name="minIdle" value="${jdbc.minIdle}"/>
+    </bean>
+
+    <!-- -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 设置 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 开启类型别名  包扫描  -->
+        <property name="typeAliasesPackage" value="com.pinyougou.pojo"/>
+        <!-- 设置 通用mapper 的 mybatis-config.xml -->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!-- 设置sql 映射文件 -->
+        <property name="mapperLocations" value="classpath:mappers/**/*.xml"/>
+    </bean>
+
+    <!-- 批量配置 数据访问接口的 代理对象 -->
+    <!-- 扫描范围内的接口  创建他们的代理对象  交给spring 因为该文件被 spring 解析 -->
+    <!-- 代理对象的id  默认为 接口的名字  首字母 小写 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.pinyougou.mapper"/>
+    </bean>
+
+    <!-- 配置 事务管理器  -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" value="dataSource"/>
+    </bean>
+    <!-- 配置开启事务注解驱动
+
+    由于 dubbo 用@service 暴露服务
+     业务层 需要 加事务  会 产生代理对象  原因:事务会不起作用~
+       代理对象  基于接口 和基于类  默认 false
+     -->
+    <tx:annotation-driven proxy-target-class="true"/>
+
+</beans>

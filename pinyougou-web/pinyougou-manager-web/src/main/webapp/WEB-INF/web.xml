@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
+		<!--  web 需要啥?  mvc 前端控制器 -->
+		<servlet>
+			<servlet-name>pinyougou</servlet-name>
+			<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+			<!-- 参数注入   name  参数 注入    value 是参数的值
+				这里用于告诉  前端控制器      配置 在哪   这里的 name 是 成员变量中的
+			-->
+			<init-param>
+				<param-name>contextConfigLocation</param-name>
+				<param-value>classpath:springmvc.xml</param-value>
+			</init-param>
+			<!-- 加载的优先顺序  当为 非正数时 就在servlet 选择时才加载  越小越先加载
+			好处:  可以在启动时 知道 是否有错误  提前知道    在服务、容器 启动完毕后 就可以响应web请求了
+			-->
+			<load-on-startup>1</load-on-startup>
+		</servlet>
+		<!-- servlet 映射  将符合 url-parrern 中路径的  都交给 该servlet 管理 这里就是交给 pinyougou servlet 管理  -->
+		<servlet-mapping>
+			<servlet-name>pinyougou</servlet-name>
+			<url-pattern>/</url-pattern>
+		</servlet-mapping>
+
+	<!-- ######## 配置全局编码过滤器 防乱码 ########-->
+	<filter>
+		<filter-name>characterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<!-- 参数 -->
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<!-- 过滤器  映射  同上 *-mapping -->
+	<filter-mapping>
+		<filter-name>characterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- 欢迎列表 -->
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+
+</web-app>

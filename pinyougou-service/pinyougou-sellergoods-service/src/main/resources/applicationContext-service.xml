@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:contxet="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!-- mapper 属性配置文件   和 其他属性配置文件 -->
+    <contxet:property-placeholder
+            location="classpath:props/*.properties"/>
+
+    <!-- import 导入 mapper.xml数据访问 配置文件  里面需要 属性配置文件 -->
+    <import resource="classpath:applicationContext-mapper.xml"/>
+
+    <!-- ##配置dubbo## -->
+    <!-- dubbo 名字 -->
+    <dubbo:application name="pinyougou-sellergoods-service"/>
+    <!-- 注册中心地址 -->
+    <dubbo:registry protocol="zookeper" address="192.168.77.78:2181"/>
+    <!-- dubbo协议 提供者 -->
+    <dubbo:protocol name="dubbo" port="20880"/>
+    <!-- 服务扫描 -->
+    <dubbo:annotation package="com.pinyougou.sellergoods.service.impl"/>
+
+    <!--
+     或者 一个一个加↓
+    -->
+    <!--
+    <dubbo:servidc interface="com.pinyougou.service.xxx暴露的服务接口 ref="xxxx" />
+     放入spring中
+    <bean id="xxxx" class="com.xxxx服务">
+    -->
+
+</beans>
